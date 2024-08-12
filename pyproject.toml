@@ -1,0 +1,110 @@
+
+[tool.ruff]
+# Increase the line length. This breaks PEP8 but it is way easier to work with.
+# The original reason for this limit was a standard vim terminal is only 79 characters,
+# but this doesn't really apply anymore.
+line-length = 119
+# Target Python 3.12. If you decide to use a different version of Python
+# you will need to update this value.
+target-version = "py312"
+# Automatically fix auto-fixable issues.
+fix = true
+# The directory containing the source code. If you choose a different project layout
+# you will need to update this value.
+src = ["src"]
+
+[tool.ruff.lint]
+# Enable all linting rules.
+select = ["ALL"]
+# Ignore some of the most obnoxious linting errors.
+ignore = [
+    # Missing docstrings.
+    "D100",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    # Docstring whitespace.
+    "D203",
+    "D213",
+    # Docstring punctuation.
+    "D415",
+    # Docstring quotes.
+    "D301",
+    # Builtins.
+    "A",
+    # Print statements.
+    "T20",
+    # TODOs.
+    "TD002",
+    "TD003",
+    "FIX",
+    # Annotations.
+    "ANN101",
+    "ANN102",
+    # Additional codes.
+    "COM812",  # missing-trailing-comma
+    "COM819",  # prohibited-trailing-comma
+    "D206",    # indent-with-spaces
+    "D300",    # triple-single-quotes
+    "E111",    # indentation-with-invalid-multiple
+    "E114",    # indentation-with-invalid-multiple-comment
+    "E117",    # over-indented
+    "E501",    # line-too-long
+    "INP001",  # implicit-namespace-package
+    "ISC001",  # single-line-implicit-string-concatenation
+    "ISC002",  # multi-line-implicit-string-concatenation
+    "Q000",    # bad-quotes-inline-string
+    "Q001",    # bad-quotes-multiline-string
+    "Q002",    # bad-quotes-docstring
+    "Q003",    # avoidable-escaped-quote
+    "W191",    # tab-indentation
+    "S605",    # dont open a new shell
+    "N815",    # mixedCase Error
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "mullvad_cli_theheretic_0"
+version = "0.1.0"
+authors = [
+  { name="theheretic_", email="DannyTheHeretic@proton.me" },
+]
+description = "A package for interacting with the mullvad cli api"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GPL3 License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/DannyTheHeretic/mullvad_cli_api"
+Issues = "https://github.com/DannyTheHeretic/mullvad_cli_api/issues"
+
+
+
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/*.py",
+  "/tests",
+]
+exclude = [
+  "*.json",
+  "pkg/_compat.py",
+]
+
+[tool.hatch.build.targets.wheel]
+artifacts = [
+  "*.so",
+  "*.dll",
+  "!/foo/*.so",
+]
