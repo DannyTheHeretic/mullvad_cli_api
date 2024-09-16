@@ -1,2 +1,5 @@
 /.venv/
-
+/.vscode/
+/dist/
+build_upload.sh
+*/__pycache__/*

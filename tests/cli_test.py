@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime
 from unittest.mock import patch
 
-from src import AccountNotFound, MullvadCLI
+from mullvad import AccountNotFound, MullvadCLI
 
 
 class TestMullvadCLI(unittest.TestCase):

@@ -11,7 +11,7 @@ target-version = "py312"
 fix = true
 # The directory containing the source code. If you choose a different project layout
 # you will need to update this value.
-src = ["src"]
+src = ["mullvad"]
 
 [tool.ruff.lint]
 # Enable all linting rules.
@@ -71,8 +71,8 @@ build-backend = "hatchling.build"
 
 
 [project]
-name = "mullvad_cli_theheretic_0"
-version = "0.1.0"
+name = "mullvad"
+version = "0.1.2"
 authors = [
   { name="theheretic_", email="DannyTheHeretic@proton.me" },
 ]
@@ -97,8 +97,7 @@ Issues = "https://github.com/DannyTheHeretic/mullvad_cli_api/issues"
 ignore-vcs = true
 
 include = [
-  "src/*.py",
-  "/tests",
+  "mullvad/*.py",
 ]
 exclude = [
   "*/__pycache__/*",
@@ -107,7 +106,7 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["mullvad"]
 
 artifacts = [
   "*.so",

@@ -4,7 +4,7 @@ from datetime import datetime
 from os import popen
 from typing import Literal
 
-from src import AccountNotFound
+from mullvad import AccountNotFound
 
 
 class MullvadCLI:
@@ -20,13 +20,16 @@ class MullvadCLI:
 
     def __log__(self) -> None:
         logformat = '%(asctime)s %(module)12s:%(lineno)-4s %(levelname)-9s %(message)s'
-        loglevel = 'INFO'
+        self.loglevel = 'INFO'
         loghandler = logging.NullHandler()
         loghandler.setFormatter(logging.Formatter(logformat))
         self.log.addHandler(loghandler)
-        self.log.setLevel(loglevel)
+        self.log.setLevel(self.loglevel)
         self.log.info("Started Logging Mullvad.")
 
+    def log_level(self, level:Literal["DEBUG","INFO","WARNING","ERROR","EXCEPTION"]) -> None:
+        """Update the logging level."""
+        self.log.setLevel(level=level)
 
     def version(self) -> str:
         """Return the version of the mullvad client.
