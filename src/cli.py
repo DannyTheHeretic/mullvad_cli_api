@@ -4,7 +4,7 @@ import logging
 from os import popen
 from typing import Literal
 
-from exceptions import AccountNotFound
+from src import AccountNotFound
 
 
 class MullvadCLI:
@@ -63,10 +63,11 @@ class MullvadCLI:
         d = temp.splitlines()
         ret = {}
         for _ in d:
+            tmp = _.split(":")
             if not _.startswith("Expir"):
-                ret.update({_.split(":")[0]:_[1].strip()})
+                ret.update({tmp[0]: tmp[1].strip()})
             else:
-                ret.update({_.split(":")[0]:datetime.fromisoformat(_[1].strip())})
+                ret.update({tmp[0]: datetime.fromisoformat(tmp[1].strip())})
         return ret
 
 
@@ -221,6 +222,11 @@ class MullvadCLI:
         # TODO: Implement this
 
         # TODO The Rest: "location","custom-list","provider","ownership","custom"
+        
+    def set_bridge_location(self, location: Literal[""]):
+        ...
+        # TODO: everything
+
     def list_bridge(self):
         ...
         # TODO: Implement this
