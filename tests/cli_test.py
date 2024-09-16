@@ -8,7 +8,7 @@ from mullvad import AccountNotFound, MullvadCLI
 class TestMullvadCLI(unittest.TestCase):
     """."""
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_initialization(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Connected to Mullvad"
@@ -16,7 +16,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertTrue(cli.is_connected)
         mock_popen.assert_called_with("mullvad status")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_version(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Mullvad 2024.1.0"
@@ -25,7 +25,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(version.strip(), "Mullvad 2024.1.0")
         mock_popen.assert_called_with("mullvad -V")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_status(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Connected"
@@ -34,7 +34,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertTrue(cli.is_connected)
         mock_popen.assert_called_with("mullvad status")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_account_info(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = (
@@ -52,7 +52,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(info, expected_info)
         mock_popen.assert_called_with("mullvad account get")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_account_info_not_logged_in(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Not logged in"
@@ -61,7 +61,7 @@ class TestMullvadCLI(unittest.TestCase):
             cli.account_info()
         mock_popen.assert_called_with("mullvad account get")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_login(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = 'Mullvad account "12345" set'
@@ -70,7 +70,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(response.strip(), 'Mullvad account "12345" set')
         mock_popen.assert_called_with("mullvad account login 12345")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_login_account_not_found(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Error: Account Not Found"
@@ -79,7 +79,7 @@ class TestMullvadCLI(unittest.TestCase):
             cli.login(12345)
         mock_popen.assert_called_with("mullvad account login 12345")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_logout(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Removed device from Mullvad account"
@@ -88,7 +88,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(response.strip(), "Removed device from Mullvad account")
         mock_popen.assert_called_with("mullvad account logout")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_set_auto_connect(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = ""
@@ -97,7 +97,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(response.strip(), "Successfully set the auto-connect to: `On`")
         mock_popen.assert_called_with("mullvad auto-connect set on")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_get_auto_connect(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Autoconnect: on"
@@ -106,7 +106,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(status.strip(), "Autoconnect: on")
         mock_popen.assert_called_with("mullvad auto-connect get")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_set_lockdown_mode(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = ""
@@ -115,7 +115,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(response.strip(), "Successfully set the lockdown-mode to: `Off`")
         mock_popen.assert_called_with("mullvad lockdown-mode set off")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_get_lockdown_mode(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = "Block traffic when the VPN is disconnected: off"
@@ -124,7 +124,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertEqual(status.strip(), "Block traffic when the VPN is disconnected: off")
         mock_popen.assert_called_with("mullvad lockdown-mode get")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_connect(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = ""
@@ -135,7 +135,7 @@ class TestMullvadCLI(unittest.TestCase):
         self.assertTrue(cli.is_connected)
         mock_popen.assert_called_with("mullvad connect")
 
-    @patch('src.cli.popen')
+    @patch('mullvad.cli.popen')
     def test_disconnect(self, mock_popen: any) -> None:
         """."""
         mock_popen.return_value.read.return_value = ""
