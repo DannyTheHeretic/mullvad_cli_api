@@ -1,6 +1,6 @@
 
-from datetime import datetime
 import logging
+from datetime import datetime
 from os import popen
 from typing import Literal
 
@@ -10,15 +10,15 @@ from src import AccountNotFound
 class MullvadCLI:
     """A wrapper for the Mullvad CLI Api."""
 
-    def __init__(self) -> None:
-        self.path = "mullvad"
+    def __init__(self, path:str = "mullvad") -> None:
+        self.path = path
         self.log = logging.getLogger("mullvad.cli")
         self.__log__()
-        self.status = popen(f"{self.path} status").read()
-        self.is_connected = "Connected" in self.status
+        self.status_str = popen(f"{self.path} status").read()
+        self.is_connected = "Connected" in self.status_str
 
 
-    def __log__(self):
+    def __log__(self) -> None:
         logformat = '%(asctime)s %(module)12s:%(lineno)-4s %(levelname)-9s %(message)s'
         loglevel = 'INFO'
         loghandler = logging.NullHandler()
@@ -29,37 +29,43 @@ class MullvadCLI:
 
 
     def version(self) -> str:
-        """Return the version of the mullvad client
+        """Return the version of the mullvad client.
 
-        Returns:
+        Returns
+        -------
             str: the version of the mullvad client
+
         """
-        return popen("mullvad -V").read()
+        return popen(f"{self.path} -V").read()
 
 
-    def status(self) -> bool:
+    def status(self) -> None:
         """Get the status."""
-        self.status = popen(f"{self.path} status").read()
-        self.log.info(self.status)
+        self.status_str = popen(f"{self.path} status").read()
+        self.log.info(self.status_str)
 
 
 ############## Account Calls ###############
     def account_info(self) -> dict:
-        """Get the account info
+        """Get the account info.
 
-        Raises:
+        Raises
+        ------
             AccountNotFound: If you aren't Logged in
 
-        Returns:
+        Returns
+        -------
             dict: {
                 Mullvad account: <token>
                 Expires at: <datetime_object>
                 Device name: <client_name>
             }
+
         """
         temp = popen(f"{self.path} account get").read()
         if "Not logged in" in temp:
-            raise AccountNotFound("Not logged in on any account")
+            msg = "Not logged in on any account"
+            raise AccountNotFound(msg)
         d = temp.splitlines()
         ret = {}
         for _ in d:
@@ -72,50 +78,62 @@ class MullvadCLI:
 
 
     def login(self, token:int) -> str:
-        """Log into the API
+        """Log into the API.
 
         Args:
+        ----
             token (int): Your account token for mullvad
 
         Raises:
+        ------
             AccountNotFound: If the account does not exist.
 
         Returns:
+        -------
             str: returns the account it was added to in the format of `Mullvad account "<token>" set`
+
         """
         temp = popen(f"{self.path} account login {token}").read()
         if "Error: " in temp:
-            raise AccountNotFound("Account Not Found, sorry")
+            msg = "Account Not Found, sorry"
+            raise AccountNotFound(msg)
         return temp
 
 
     def logout(self) -> str:
-        """Logout of the Client
+        """Logout of the Client.
 
-        Returns:
+        Returns
+        -------
             str: Removed device from Mullvad account
+
         """
         return popen(f"{self.path} account logout").read()
 
 
 ############ Auto-connect Calls ############
     def get_auto_connect(self) -> str:
-        """Gets the auto connect status
+        """Get the auto connect status.
 
-        Returns:
+        Returns
+        -------
             str: Autoconnect: <status>
+
         """
-        return popen("mullvad auto-connect get").read()
+        return popen(f"{self.path} auto-connect get").read()
 
 
     def set_auto_connect(self, status:Literal["on","off"]) -> str:
-        """Set the auto connect to On/Off
+        """Set the auto connect to On/Off.
 
         Args:
+        ----
             status (Literal[&quot;on&quot;,&quot;off&quot;]): what status to set the autoconnect to
 
         Returns:
+        -------
             str: Successfully set the auto-connect to: <status>
+
         """
         popen(f"mullvad auto-connect set {status}")
         return f"Successfully set the auto-connect to: `{status.capitalize()}`"
@@ -123,50 +141,55 @@ class MullvadCLI:
 
 ############## Lockdown Calls ##############
     def get_lockdown_mode(self) -> str:
-        """Block traffic when the VPN is disconnected?
+        """Block traffic when the VPN is disconnected?.
 
-        Returns:
+        Returns
+        -------
             str: Block traffic when the VPN is disconnected: <status>
+
         """
-        return popen("mullvad lockdown-mode get").read()
+        return popen(f"{self.path} lockdown-mode get").read()
 
 
     def set_lockdown_mode(self, status:Literal["on","off"]) -> str:
-        """Set the lockdown mode
+        """Set the lockdown mode.
 
-        WARNING
-        If you are on a remote server and trigger this, there will be NO way to turn 
+        Warning:
+        -------
+        If you are on a remote server and trigger this, there will be NO way to turn
         it off if you run the disconnect command, or are already disconnected
         This means you will be kicked out of the server.
 
         Args:
+        ----
             status (Literal[&quot;on&quot;,&quot;off&quot;]): What you want to set lockdown mode too
 
         Returns:
+        -------
             str: Successfully set the lockdown-mode to: <status>
-            
+
         """
         popen(f"mullvad lockdown-mode set {status}")
         return f"Successfully set the lockdown-mode to: `{status.capitalize()}`"
 
 
 ################ DNS Calls #################
-    def get_dns(self):
-        ...
+    def get_dns(self) -> None:
+        """."""
         # TODO: Implement this
-    
-    def set_dns(self, type, *dns_servers):
-        ...
+
+    def set_dns(self, type:str, *dns_servers:any) -> None:
+        """."""
         # TODO: Implement this
 
 
 ################ LAN Calls #################
-    def get_lan(self):
-        ...
+    def get_lan(self) -> None:
+        """."""
         # TODO: Implement this
-    
-    def set_lan(self, status: Literal["allow","block"]):
-        ...
+
+    def set_lan(self, status: Literal["allow","block"]) -> None:
+        """."""
         # TODO: Implement this
 
 ############# Connection Calls #############
@@ -179,7 +202,7 @@ class MullvadCLI:
         tmp = popen(f"{self.path} connect").read()
         if "Warning" in tmp:
             raise AccountNotFound(tmp)
-        
+
         self.log.info("Connecting...")
         return True
 
@@ -192,16 +215,18 @@ class MullvadCLI:
         tmp = popen(f"{self.path} connect").read()
         if "Warning" in tmp:
             raise AccountNotFound(tmp)
-        
+
         self.log.info("Connecting...")
         return True
 
 
     def disconnect(self) -> bool:
-        """Disconnect from the relay
+        """Disconnect from the relay.
 
-        Returns:
+        Returns
+        -------
             bool: If the connection **Changed**  if the server was already disconnected it returns False.
+
         """
         if not self.is_connected:
             self.log.info("Not connected")
@@ -213,22 +238,22 @@ class MullvadCLI:
 
 
 ############### Bridge Calls ###############
-    def get_bridge(self):
-        ...
-        # TODO: Implement this
-        
-    def set_bridge_state(self, type: Literal["auto","on","off"],):
-        ...
+    def get_bridge(self) -> None:
+        """."""
         # TODO: Implement this
 
-        # TODO The Rest: "location","custom-list","provider","ownership","custom"
-        
-    def set_bridge_location(self, location: Literal[""]):
-        ...
+    def set_bridge_state(self, type: Literal["auto","on","off"],) -> None:
+        """."""
+        # TODO: Implement this
+
+        # TODO: The Rest: "location","custom-list","provider","ownership","custom"
+
+    def set_bridge_location(self, location: Literal[""])-> None:
+        """."""
         # TODO: everything
 
-    def list_bridge(self):
-        ...
+    def list_bridge(self) -> None:
+        """."""
         # TODO: Implement this
 
 ############### Relay Calls ################

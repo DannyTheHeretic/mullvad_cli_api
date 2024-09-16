@@ -61,6 +61,8 @@ ignore = [
     "W191",    # tab-indentation
     "S605",    # dont open a new shell
     "N815",    # mixedCase Error
+    "PT009",   # assertTrue
+    "PT027",   # assertRaises
 ]
 
 [build-system]
@@ -79,7 +81,8 @@ readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: GPL3 License",
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
 
@@ -89,22 +92,24 @@ Issues = "https://github.com/DannyTheHeretic/mullvad_cli_api/issues"
 
 
 
+
 [tool.hatch.build.targets.sdist]
 ignore-vcs = true
 
-[tool.hatch.build.targets.sdist]
 include = [
   "src/*.py",
   "/tests",
 ]
 exclude = [
+  "*/__pycache__/*",
   "*.json",
   "pkg/_compat.py",
 ]
 
 [tool.hatch.build.targets.wheel]
+packages = ["src"]
+
 artifacts = [
   "*.so",
   "*.dll",
-  "!/foo/*.so",
 ]
