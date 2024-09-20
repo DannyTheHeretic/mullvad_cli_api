@@ -4,7 +4,8 @@ from datetime import datetime
 from os import popen
 from typing import Literal
 
-from mullvad import AccountNotFound
+from exceptions import AccountNotFound
+from models import DNS
 
 
 class MullvadCLI:
@@ -16,7 +17,6 @@ class MullvadCLI:
         self.__log__()
         self.status_str = popen(f"{self.path} status").read()
         self.is_connected = "Connected" in self.status_str
-
 
     def __log__(self) -> None:
         logformat = '%(asctime)s %(module)12s:%(lineno)-4s %(levelname)-9s %(message)s'
@@ -40,7 +40,6 @@ class MullvadCLI:
 
         """
         return popen(f"{self.path} -V").read()
-
 
     def status(self) -> None:
         """Get the status."""
@@ -177,13 +176,36 @@ class MullvadCLI:
 
 
 ################ DNS Calls #################
-    def get_dns(self) -> None:
+    def get_dns(self) -> DNS:
         """."""
-        # TODO: Implement this
+        mod = DNS()
+        val = popen(f"{self.path} dns get").read()
+        for _ in val.splitlines():
+            line = _.split(" ")
+            if line[2] == "true":
+                match line[1]:
+                    case "ads:":
+                        mod.block_ads = True
+                    case "trackers:":
+                        mod.block_trackers = True
+                    case "malware:":
+                        mod.block_malware = True
+                    case "adult":
+                        mod.block_adult_content = True
+                    case "gambling:":
+                        mod.block_gambling = True
+                    case "social":
+                        mod.block_social_media = True
+        return mod
 
-    def set_dns(self, type:str, *dns_servers:any) -> None:
+    def set_dns(self, dns_settings:DNS) -> None:
         """."""
-        # TODO: Implement this
+        dns_dict= dns_settings.__dict__()
+        popen(f"{self.path} dns set default")
+        for i in dns_dict:
+            if dns_dict[i]:
+                print(f"updated {i}")
+                popen(f"{self.path} dns set default {i}")
 
 
 ################ LAN Calls #################
@@ -221,7 +243,6 @@ class MullvadCLI:
 
         self.log.info("Connecting...")
         return True
-
 
     def disconnect(self) -> bool:
         """Disconnect from the relay.
@@ -276,4 +297,12 @@ class MullvadCLI:
 
 ########### Factory Reset Calls ############
 
+
+
+
+if __name__ == "__main__":
+    tmp = MullvadCLI()
+    dns = tmp.get_dns()
+    dns.block_ads = True
+    tmp.set_dns(dns)
 
